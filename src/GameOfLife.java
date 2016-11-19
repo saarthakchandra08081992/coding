@@ -1,9 +1,5 @@
-import java.io.File;
-import java.util.Scanner;
-
 class GameOfLife {
 
-	static int[][] nextBoard;
 	final static int numRounds = 1;
 
 	static int countSurrounding(int[][] board, int a, int b) {
@@ -21,50 +17,10 @@ class GameOfLife {
 		return count;
 	}
 
-	static void printBoard(int[][] board) {
-		for (int i = 0; i < board.length; i++) {
-			for (int j = 0; j < board[0].length; j++) {
-				System.out.print(board[i][j]);
-			}
-			System.out.println();
-		}
-		System.out.println();
-	}
-
-	private static void parseInput(String entries) {
-		int numRowsOrCols = (int) Math.sqrt(entries.length());
-		// initialize the board
-		nextBoard = new int[numRowsOrCols][numRowsOrCols];
-		for (int i = 0; i < numRowsOrCols; i++) {
-			for (int j = 0; j < numRowsOrCols; j++) {
-				nextBoard[i][j] = (int) entries.charAt(numRowsOrCols * i + j) - 48;
-			}
-		}
-	}
-
-	private static void readFile(String fileName) {
-		try {
-			Scanner scanner = new Scanner(new File(fileName));
-			String entries = "";
-			while (scanner.hasNext()) {
-				entries += String.valueOf(scanner.next());
-			}
-			int inputLength = entries.toCharArray().length;
-			double rootOfLength = Math.sqrt(inputLength);
-			// Since we have non-square input size
-			if (rootOfLength - Math.floor(rootOfLength) > 0.0)
-				System.err.println("Invalid Input");
-			else
-				parseInput(entries); // Parse into the 2d array
-		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
-		}
-	}
-
 	public static void main(String[] args) {
 
-		readFile(args[0]);
-
+		Board boardLife = new Board();
+		int[][] nextBoard = boardLife.getBoard(args[0]);
 		int[][] board = new int[nextBoard.length][nextBoard[0].length];
 
 		for (int gen = 0; gen < numRounds; gen++) {
@@ -87,6 +43,6 @@ class GameOfLife {
 				}
 			}
 		}
-		printBoard(nextBoard);
+		boardLife.printBoard(nextBoard);
 	}
 }
