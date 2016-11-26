@@ -2,11 +2,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Random;
 
 public class MLDS {
 
 	static final String basePath = "/Users/sureshchandra/Desktop";
-	static final int arraySize = 100;
+	static final int arraySize = 1000000;
+	static Random rand = new Random();
 
 	// input is prob of getting 1
 	/**
@@ -16,9 +18,9 @@ public class MLDS {
 	 *            a/b gives us the probability of getting a 1
 	 * @return returns a 1/0 based on probability of 1/0
 	 */
-	public static int getDigit(double a, double b) {
-		double probOne = (double) a / b;
-		if (Math.random() < probOne)
+	public static int getDigit(double prob) {
+		double probOne = (double) prob;
+		if (rand.nextDouble() < probOne)
 			return 1;
 		else
 			return 0;
@@ -44,34 +46,34 @@ public class MLDS {
 		double sumX3asZero = 0.0;
 
 		for (int i = 0; i < 100; i++) {
-			arrayX1[i] = getDigit(1.0, 10.0);
-			arrayX4[i] = getDigit(4.0, 10.0);
+			arrayX1[i] = getDigit(0.1);
+			arrayX4[i] = getDigit(0.4);
 			if (arrayX1[i] == 0 && arrayX4[i] == 0) {
 				arrayX2[i] = 1;
-				weight[i] = (double) 1 / 10;
+				weight[i] = (double) 0.1;
 				sumWeight += weight[i];
-				arrayX3[i] = getDigit(8, 10);
+				arrayX3[i] = getDigit(0.8);
 			}
 
 			else if (arrayX1[i] == 0 && arrayX4[i] == 1) {
 				arrayX2[i] = 1;
-				weight[i] = (double) 2 / 10;
+				weight[i] = (double) 0.2;
 				sumWeight += weight[i];
-				arrayX3[i] = getDigit(9, 10);
+				arrayX3[i] = getDigit(0.9);
 			}
 
 			else if (arrayX1[i] == 1 && arrayX4[i] == 0) {
 				arrayX2[i] = 1;
-				weight[i] = (double) 2 / 10;
+				weight[i] = (double) 0.2;
 				sumWeight += weight[i];
-				arrayX3[i] = getDigit(9, 10);
+				arrayX3[i] = getDigit(0.9);
 			}
 
 			else if (arrayX1[i] == 1 && arrayX4[i] == 1) {
 				arrayX2[i] = 1;
-				weight[i] = (double) 1 / 10;
+				weight[i] = (double) 0.1;
 				sumWeight += weight[i];
-				arrayX3[i] = getDigit(2, 10);
+				arrayX3[i] = getDigit(0.2);
 			}
 
 			// We know we got 1, so we include it
@@ -113,26 +115,27 @@ public class MLDS {
 		int x3Zero = 0;
 
 		for (int i = 0; i < 100; i++) {
-			arrayX1[i] = getDigit(1.0, 10.0);
-			arrayX4[i] = getDigit(4.0, 10.0);
+			arrayX1[i] = getDigit(0.1);
+			arrayX4[i] = getDigit(0.4);
+
 			if (arrayX1[i] == 0 && arrayX4[i] == 0) {
-				arrayX2[i] = getDigit(1, 10);
-				arrayX3[i] = getDigit(8, 10);
+				arrayX2[i] = getDigit(0.1);
+				arrayX3[i] = getDigit(0.8);
 			}
 
 			else if (arrayX1[i] == 0 && arrayX4[i] == 1) {
-				arrayX2[i] = getDigit(2, 10);
-				arrayX3[i] = getDigit(9, 10);
+				arrayX2[i] = getDigit(0.2);
+				arrayX3[i] = getDigit(0.9);
 			}
 
 			else if (arrayX1[i] == 1 && arrayX4[i] == 0) {
-				arrayX2[i] = getDigit(2, 10);
-				arrayX3[i] = getDigit(9, 10);
+				arrayX2[i] = getDigit(0.2);
+				arrayX3[i] = getDigit(0.9);
 			}
 
 			else if (arrayX1[i] == 1 && arrayX4[i] == 1) {
-				arrayX2[i] = getDigit(1, 10);
-				arrayX3[i] = getDigit(2, 10);
+				arrayX2[i] = getDigit(0.1);
+				arrayX3[i] = getDigit(0.2);
 			}
 
 			// We know we got 1 as X2, so we include it,else we do not add that
@@ -152,8 +155,8 @@ public class MLDS {
 
 		}
 		System.out.println("Q2:");
-		System.out.println("P(X3=1 | X2=1) = "+(double)x3One/ctr);
-		System.out.println("P(X3=0 | X2=1) = "+(double)x3Zero/ctr);
+		System.out.println("P(X3=1 | X2=1) = " + (double) x3One / ctr);
+		System.out.println("P(X3=0 | X2=1) = " + (double) x3Zero / ctr);
 		writeToCsv(basePath + "/rejection.csv", finalarrayX1, finalarrayX2, finalarrayX3, finalarrayX4, ctr);
 	}
 
@@ -176,6 +179,7 @@ public class MLDS {
 	public static void main(String[] args) {
 		rejectionSampling();
 		importanceSampling();
+
 		// Now we have our 100 samples
 
 	}
