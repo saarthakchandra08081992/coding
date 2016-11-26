@@ -5,25 +5,112 @@ import java.util.Arrays;
 
 public class MLDS {
 
+	static final String basePath = "/Users/sureshchandra/Desktop";
+	static final int arraySize = 100;
+
 	// input is prob of getting 1
+	/**
+	 * 
+	 * @param a
+	 * @param b
+	 *            a/b gives us the probability of getting a 1
+	 * @return returns a 1/0 based on probability of 1/0
+	 */
 	public static int getDigit(double a, double b) {
-		if (Math.random() < (double) a / b)
+		double probOne = (double) a / b;
+		if (Math.random() < probOne)
 			return 1;
 		else
 			return 0;
 	}
 
-	public static void rejectionSampling() {
-		int[] arrayX1 = new int[100];
-		int[] arrayX4 = new int[100];
-		int[] arrayX2 = new int[100];
-		int[] arrayX3 = new int[100];
+	/**
+	 * write the values into a CSV
+	 */
+	public static void importanceSampling() {
+		int[] arrayX1 = new int[arraySize];
+		int[] arrayX4 = new int[arraySize];
+		int[] arrayX2 = new int[arraySize];
+		int[] arrayX3 = new int[arraySize];
 
-		int[] finalarrayX1 = new int[100];
-		int[] finalarrayX4 = new int[100];
-		int[] finalarrayX2 = new int[100];
-		int[] finalarrayX3 = new int[100];
+		int[] finalarrayX1 = new int[arraySize];
+		int[] finalarrayX4 = new int[arraySize];
+		int[] finalarrayX2 = new int[arraySize];
+		int[] finalarrayX3 = new int[arraySize];
+		double weight[] = new double[arraySize];
 		int ctr = 0;
+		double sumWeight = 0.0;
+		double sumX3asOne = 0.0;
+		double sumX3asZero = 0.0;
+
+		for (int i = 0; i < 100; i++) {
+			arrayX1[i] = getDigit(1.0, 10.0);
+			arrayX4[i] = getDigit(4.0, 10.0);
+			if (arrayX1[i] == 0 && arrayX4[i] == 0) {
+				arrayX2[i] = 1;
+				weight[i] = (double) 1 / 10;
+				sumWeight += weight[i];
+				arrayX3[i] = getDigit(8, 10);
+			}
+
+			else if (arrayX1[i] == 0 && arrayX4[i] == 1) {
+				arrayX2[i] = 1;
+				weight[i] = (double) 2 / 10;
+				sumWeight += weight[i];
+				arrayX3[i] = getDigit(9, 10);
+			}
+
+			else if (arrayX1[i] == 1 && arrayX4[i] == 0) {
+				arrayX2[i] = 1;
+				weight[i] = (double) 2 / 10;
+				sumWeight += weight[i];
+				arrayX3[i] = getDigit(9, 10);
+			}
+
+			else if (arrayX1[i] == 1 && arrayX4[i] == 1) {
+				arrayX2[i] = 1;
+				weight[i] = (double) 1 / 10;
+				sumWeight += weight[i];
+				arrayX3[i] = getDigit(2, 10);
+			}
+
+			// We know we got 1, so we include it
+			if (arrayX2[i] == 1) {
+				finalarrayX1[ctr] = arrayX1[i];
+				finalarrayX2[ctr] = arrayX2[i];
+				finalarrayX3[ctr] = arrayX3[i];
+				finalarrayX4[ctr] = arrayX4[i];
+				ctr++;
+			}
+
+			// If we found x3 as 1, we find x3's weight of being 1
+			if (arrayX3[i] == 1) {
+				sumX3asOne += weight[i];
+			} else
+				sumX3asZero += weight[i];
+		} // end for loop
+
+		System.out.println("Q3:");
+		System.out.println("P(X3=1 | X2=1) = " + (sumX3asOne / sumWeight));
+		System.out.println("P(X3=0 | X2=1) = " + (sumX3asZero / sumWeight));
+
+		writeToCsv(basePath + "/importance.csv", finalarrayX1, finalarrayX2, finalarrayX3, finalarrayX4, ctr);
+	}
+
+	public static void rejectionSampling() {
+		int[] arrayX1 = new int[arraySize];
+		int[] arrayX4 = new int[arraySize];
+		int[] arrayX2 = new int[arraySize];
+		int[] arrayX3 = new int[arraySize];
+
+		int[] finalarrayX1 = new int[arraySize];
+		int[] finalarrayX4 = new int[arraySize];
+		int[] finalarrayX2 = new int[arraySize];
+		int[] finalarrayX3 = new int[arraySize];
+
+		int ctr = 0;
+		int x3One = 0;
+		int x3Zero = 0;
 
 		for (int i = 0; i < 100; i++) {
 			arrayX1[i] = getDigit(1.0, 10.0);
@@ -48,22 +135,29 @@ public class MLDS {
 				arrayX3[i] = getDigit(2, 10);
 			}
 
-			// We know we got 1, so we include it
+			// We know we got 1 as X2, so we include it,else we do not add that
 			if (arrayX2[i] == 1) {
 				finalarrayX1[ctr] = arrayX1[i];
 				finalarrayX2[ctr] = arrayX2[i];
 				finalarrayX3[ctr] = arrayX3[i];
 				finalarrayX4[ctr] = arrayX4[i];
+
+				if (arrayX3[i] == 1)
+					x3One++;
+				else
+					x3Zero++;
+
 				ctr++;
 			}
-		}
 
-		writeToCsv("/Users/sureshchandra/Desktop/rejection.csv", finalarrayX1, finalarrayX2, finalarrayX3, finalarrayX4,
-				ctr);
+		}
+		System.out.println("Q2:");
+		System.out.println("P(X3=1 | X2=1) = "+(double)x3One/ctr);
+		System.out.println("P(X3=0 | X2=1) = "+(double)x3Zero/ctr);
+		writeToCsv(basePath + "/rejection.csv", finalarrayX1, finalarrayX2, finalarrayX3, finalarrayX4, ctr);
 	}
 
 	public static void writeToCsv(String csvFile, int[] x1, int[] x2, int[] x3, int[] x4, int size) {
-		// String csvFile = "/Users/schandra2/Desktop/rejection.csv";
 		try {
 			FileWriter writer = new FileWriter(new File(csvFile));
 			for (int i = 0; i < size; i++)
@@ -81,6 +175,7 @@ public class MLDS {
 
 	public static void main(String[] args) {
 		rejectionSampling();
+		importanceSampling();
 		// Now we have our 100 samples
 
 	}
