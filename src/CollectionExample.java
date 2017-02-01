@@ -13,12 +13,12 @@ public class CollectionExample {
 		
 		Pattern pat = Pattern.compile("([a-z|A-Z]+)");
 		Matcher mat = pat.matcher(buf);
-		
-		System.out.println();
+			
 		while(mat.find()){
 			System.out.println("Matched is  - "+mat.group(0));
 		}
 	}
+	
 	
 	public static void printStrings(List<String> list){
 		for(String str : list){

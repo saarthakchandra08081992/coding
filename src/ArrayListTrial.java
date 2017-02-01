@@ -31,15 +31,25 @@ public class ArrayListTrial {
 		while (!stack.isEmpty()) {
 			ch = stack.pop();
 			System.out.print(ch);
+			
+			String s="22556";
+			;
+			char[] aray = s.toCharArray();
+			System.out.println(s.contains(".jpg") + " Do we ?? ");
 		}
 	}
 
 	private static void reverseString(String str) {
+		long num = 960069;
+		System.out.println(new StringBuilder((num + "").trim()).reverse() + "------");
+		System.out.println((num + "").trim());
+		System.out.println(new StringBuilder((num + "").trim()).reverse().toString().equalsIgnoreCase((num + "").trim()) + " - for number - "
+				+ (num + "").trim());
 		System.out.println();
 		String[] strings = str.split("[ ]+");
-		System.out.println("Length is  - "+strings.length);
+		System.out.println("Length is  - " + strings.length);
 		for (String st : strings) {
-			System.out.println(new StringBuilder(st).reverse());
+			System.out.print(new StringBuilder(st).reverse());
 		}
 	}
 }
